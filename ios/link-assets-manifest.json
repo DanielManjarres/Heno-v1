@@ -1,0 +1,21 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/times.ttf",
+      "sha1": "b2e16b63f0047f4096ed5bbc3b691c44be7b3fc7"
+    },
+    {
+      "path": "assets/fonts/timesbd.ttf",
+      "sha1": "06f11d2cd2cb15080740da7db4fafbc8a0a43c6e"
+    },
+    {
+      "path": "assets/fonts/timesbi.ttf",
+      "sha1": "9892961d19f88a8467a603415ba8d68721e89f95"
+    },
+    {
+      "path": "assets/fonts/timesi.ttf",
+      "sha1": "d058fc54b3e2d7ce42fed8fdcdb515c97cfb8386"
+    }
+  ]
+}
