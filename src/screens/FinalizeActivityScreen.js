@@ -71,7 +71,7 @@ const FinalizeActivityScreen = ({ navigation, route }) => {
       }
     }
 
-    if (activity.ID_actividad === 4) {
+    if (activity.ID_actividad === 6) { // Ahora Carga (ID 6) requiere pacas de heno
       if (!pacasHeno || isNaN(pacasHeno) || parseInt(pacasHeno) <= 0) {
         Alert.alert('Error', 'Por favor, ingresa un número válido de pacas de heno.');
         return;
@@ -81,14 +81,14 @@ const FinalizeActivityScreen = ({ navigation, route }) => {
     try {
       console.log('Finalizando actividad con ID:', activity.ID_registro);
       const filas = activity.ID_actividad === 3 ? parseInt(filasHileradas) || 0 : 0;
-      const pacas = activity.ID_actividad === 4 ? parseInt(pacasHeno) || 0 : 0;
+      const pacas = activity.ID_actividad === 6 ? parseInt(pacasHeno) || 0 : 0; // Solo para ID 6 (Carga)
       await finalizeActivity(activity.ID_registro, filas, pacas);
 
       let successMessage = 'Actividad finalizada correctamente.';
       if (activity.ID_actividad === 3) {
         successMessage = `Actividad finalizada. Filas hileradas: ${filasHileradas}`;
-      } else if (activity.ID_actividad === 4) {
-        successMessage = `Actividad finalizada. Pacas de heno: ${pacasHeno}`;
+      } else if (activity.ID_actividad === 6) { // Ajuste para Carga (ID 6)
+        successMessage = `Actividad finalizada. Número de pacas de heno: ${pacasHeno}`;
       }
 
       Alert.alert('Éxito', successMessage, [
@@ -98,7 +98,7 @@ const FinalizeActivityScreen = ({ navigation, route }) => {
             setIsModalVisible(false);
             setFilasHileradas('');
             setPacasHeno('');
-            navigation.navigate('SelectActivityScreen'); // Ya no pasamos userId, username, role
+            navigation.navigate('SelectActivityScreen');
           },
         },
       ]);
@@ -123,7 +123,7 @@ const FinalizeActivityScreen = ({ navigation, route }) => {
                 {
                   text: 'OK',
                   onPress: () => {
-                    navigation.navigate('SelectActivityScreen'); // Ya no pasamos userId, username, role
+                    navigation.navigate('HomeScreen');
                   },
                 },
               ]);
@@ -178,7 +178,7 @@ const FinalizeActivityScreen = ({ navigation, route }) => {
       <ImageBackground source={require('../../assets/images/background1.jpg')} style={styles.background}>
         <View style={styles.header}>
           <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
-          <Text style={styles.headerText}>Eco Comercial SAS</Text>
+          <Text style={styles.headerText}>Heno 1.0</Text>
           <Text style={styles.username}>{username}</Text>
         </View>
         <View style={styles.container}>
@@ -194,7 +194,7 @@ const FinalizeActivityScreen = ({ navigation, route }) => {
       <ImageBackground source={require('../../assets/images/background1.jpg')} style={styles.background}>
         <View style={styles.header}>
           <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
-          <Text style={styles.headerText}>Eco Comercial SAS</Text>
+          <Text style={styles.headerText}>Heno 1.0</Text>
           <Text style={styles.username}>{username}</Text>
         </View>
         <View style={styles.container}>
@@ -209,7 +209,7 @@ const FinalizeActivityScreen = ({ navigation, route }) => {
     <ImageBackground source={require('../../assets/images/background1.jpg')} style={styles.background}>
       <View style={styles.header}>
         <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
-        <Text style={styles.headerText}>Eco Comercial SAS</Text>
+        <Text style={styles.headerText}>Heno 1.0</Text>
         <Text style={styles.username}>{username}</Text>
       </View>
       <View style={styles.container}>
@@ -260,7 +260,7 @@ const FinalizeActivityScreen = ({ navigation, route }) => {
                 />
               </>
             )}
-            {activity.ID_actividad === 4 && (
+            {activity.ID_actividad === 6 && ( // Ahora Carga (ID 6) requiere pacas de heno
               <>
                 <Text style={styles.modalLabel}>Pacas de heno:</Text>
                 <TextInput
@@ -290,7 +290,7 @@ const FinalizeActivityScreen = ({ navigation, route }) => {
   );
 };
 
-// Estilos (sin cambios, ya que finalizeButton y buttonText ya están definidos)
+// Estilos (sin cambios)
 const styles = StyleSheet.create({
   background: {
     flex: 1,

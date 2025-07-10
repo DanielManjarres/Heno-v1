@@ -137,7 +137,7 @@ const CorteScreen = ({ navigation }) => {
             source={require('../../assets/images/Logo.png')}
             style={styles.logo}
           />
-          <Text style={styles.headerText}>Eco Comercial SAS</Text>
+          <Text style={styles.headerText}>Heno 1.0</Text>
           <Text style={styles.username}>{username}</Text>
         </View>
         <View style={styles.container}>
@@ -160,7 +160,7 @@ const CorteScreen = ({ navigation }) => {
             source={require('../../assets/images/Logo.png')}
             style={styles.logo}
           />
-          <Text style={styles.headerText}>Eco Comercial SAS</Text>
+          <Text style={styles.headerText}>Heno 1.0</Text>
           <Text style={styles.username}>{username}</Text>
         </View>
         <View style={styles.container}>
@@ -182,7 +182,7 @@ const CorteScreen = ({ navigation }) => {
           source={require('../../assets/images/Logo.png')}
           style={styles.logo}
         />
-        <Text style={styles.headerText}>Eco Comercial SAS</Text>
+        <Text style={styles.headerText}>Heno 1.0</Text>
         <Text style={styles.username}>{username}</Text>
       </View>
       <View style={styles.container}>
