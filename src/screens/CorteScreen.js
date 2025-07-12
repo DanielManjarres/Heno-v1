@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   activityValue: {
     fontFamily: 'times',
     fontSize: 16,
-    color: '#666',
+    color: '#333',
     marginBottom: 10,
   },
   startButton: {
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontFamily: 'timesbd',
     fontSize: 18,
-    color: '#D32F2F',
+    color: '#333',
     textAlign: 'center',
     marginBottom: 20,
   },

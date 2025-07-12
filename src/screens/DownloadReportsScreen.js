@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontFamily: 'timesbd',
     fontSize: 16,
-    color: 'red',
+    color: '#333',
     textAlign: 'center',
     marginBottom: 20,
   },

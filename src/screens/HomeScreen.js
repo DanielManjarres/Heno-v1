@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Image, Alert } from 'react-native';
-import { useUser } from './UserContext'; // Cambiar ../UserContext por ./UserContext
+import { useUser } from './UserContext';
 
 const HomeScreen = ({ navigation }) => {
   const { user, setUser } = useUser();
@@ -22,7 +22,7 @@ const HomeScreen = ({ navigation }) => {
 
   const handleLogout = () => {
     Alert.alert('Éxito', 'Sesión cerrada');
-    setUser(null); // Limpiar el contexto al cerrar sesión
+    setUser(null);
     navigation.reset({
       index: 0,
       routes: [{ name: 'LoginScreen' }],
@@ -113,7 +113,6 @@ const HomeScreen = ({ navigation }) => {
   );
 };
 
-// Estilos (sin cambios)
 const styles = StyleSheet.create({
   background: { flex: 1, resizeMode: 'cover' },
   header: {
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontFamily: 'timesbd',
     fontSize: 20,
-    color: '#fff',
+    color: '#fff', // Asegurando que "Heno 1.0" sea blanco
     flex: 1,
     textAlign: 'center',
   },
@@ -167,8 +166,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   errorText: {
+    fontFamily: 'times',
     fontSize: 18,
-    color: 'red',
+    color: '#D32F2F',
     textAlign: 'center',
     marginBottom: 20,
   },

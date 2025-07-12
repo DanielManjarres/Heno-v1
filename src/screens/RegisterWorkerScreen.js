@@ -5,23 +5,29 @@ import { getLocations, registerWorker, checkUsernameExists, checkIdentificationE
 import { useUser } from './UserContext';
 
 const RegisterWorkerScreen = ({ navigation }) => {
-  const { user } = useUser();
-  const { role } = user || {};
+  const { user, setUser } = useUser();
+  const { userId, role } = user || {};
+
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
-  const [fechaNacimiento, setFechaNacimiento] = useState(''); // Cambiado de edad
+  const [fechaNacimiento, setFechaNacimiento] = useState('');
   const [identificacion, setIdentificacion] = useState('');
-  const [usuario, setUsuario] = useState('');
+  const [usuario, setUsuario] = useState(''); // Estado para Nombre de usuario
   const [contrasena, setContrasena] = useState('');
   const [confirmarContrasena, setConfirmarContrasena] = useState('');
-  const [idUbicacion, setIdUbicacion] = useState(''); // Cambiado de ubicacion
+  const [idUbicacion, setIdUbicacion] = useState('');
   const [rol, setRol] = useState('Trabajador');
   const [ubicaciones, setUbicaciones] = useState([]);
   const [error, setError] = useState(null);
   const [formErrors, setFormErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      Alert.alert('Acceso Denegado', 'Debes iniciar sesión para acceder a esta pantalla.');
+      navigation.navigate('LoginScreen');
+      return;
+    }
 
     if (role !== 'Administrador') {
       Alert.alert('Acceso Denegado', 'Solo los administradores pueden registrar trabajadores.');
@@ -31,19 +37,23 @@ const RegisterWorkerScreen = ({ navigation }) => {
 
     const fetchLocations = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const data = await getLocations();
         setUbicaciones(data);
         if (data.length === 0) {
           setError('No hay ubicaciones disponibles. Por favor, agregue una ubicación primero.');
-        } else {
-          setError(null);
         }
       } catch (error) {
         setError('Error al cargar ubicaciones: ' + error.message);
+        console.log('Error al cargar ubicaciones:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchLocations();
-  }, [role]);
+  }, [user, role]);
 
   const calculateAge = (birthDate) => {
     if (!birthDate) return -1;
@@ -105,18 +115,18 @@ const RegisterWorkerScreen = ({ navigation }) => {
       const success = await registerWorker(
         nombre,
         apellido,
-        fechaNacimiento, // Reemplaza edad
+        fechaNacimiento,
         identificacion,
-        parseInt(idUbicacion), // Alineado con ID_ubicacion
+        parseInt(idUbicacion),
         usuario,
         contrasena,
         rol
       );
       if (success) {
         Alert.alert('Éxito', 'Trabajador registrado correctamente');
-        navigation.goBack();
+        navigation.navigate('HomeScreen', { userId, role });
       } else {
-        Alert.alert('Error', 'No se pudo registrar el trabajador');
+        Alert.alert('Error', 'No se pudo registrar el trabajador. Verifica los datos o contacta al administrador.');
       }
     } catch (error) {
       if (error.message.includes('UNIQUE constraint failed: Usuarios.Identificacion')) {
@@ -126,21 +136,57 @@ const RegisterWorkerScreen = ({ navigation }) => {
         setFormErrors({ ...formErrors, usuario: 'El nombre de usuario ya existe' });
         Alert.alert('Error', 'El nombre de usuario ya existe');
       } else {
-        Alert.alert('Error', error.message);
+        Alert.alert('Error', 'Ocurrió un error inesperado: ' + error.message);
       }
     }
   };
 
-  const handleCancel = () => navigation.goBack();
+  const handleCancel = () => navigation.navigate('HomeScreen', { userId, role });
 
   if (!user) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>No se ha iniciado sesión. Por favor, inicia sesión.</Text>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LoginScreen')}>
-          <Text style={styles.buttonText}>Ir a Iniciar Sesión</Text>
-        </TouchableOpacity>
-      </View>
+      <ImageBackground source={require('../../assets/images/background3.jpg')} style={styles.background}>
+        <View style={styles.header}>
+          <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
+          <Text style={styles.headerText}>Heno 1.0</Text>
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.errorText}>No se ha iniciado sesión. Por favor, inicia sesión.</Text>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LoginScreen')}>
+            <Text style={styles.buttonText}>Ir a Iniciar Sesión</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <ImageBackground source={require('../../assets/images/background3.jpg')} style={styles.background}>
+        <View style={styles.header}>
+          <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
+          <Text style={styles.headerText}>Heno 1.0</Text>
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.title}>Registrar Trabajador</Text>
+          <Text style={styles.loadingText}>Cargando ubicaciones...</Text>
+        </View>
+      </ImageBackground>
+    );
+  }
+
+  if (error) {
+    return (
+      <ImageBackground source={require('../../assets/images/background3.jpg')} style={styles.background}>
+        <View style={styles.header}>
+          <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
+          <Text style={styles.headerText}>Heno 1.0</Text>
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.title}>Registrar Trabajador</Text>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      </ImageBackground>
     );
   }
 
@@ -153,8 +199,6 @@ const RegisterWorkerScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
           <Text style={styles.title}>Registrar Trabajador</Text>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
           <Text style={styles.label}>Nombre</Text>
           <TextInput style={[styles.input, formErrors.nombre && styles.inputError]} placeholder="Nombre" value={nombre} onChangeText={setNombre} />
           {formErrors.nombre && <Text style={styles.errorText}>{formErrors.nombre}</Text>}
@@ -215,7 +259,6 @@ const RegisterWorkerScreen = ({ navigation }) => {
   );
 };
 
-// Estilos (sin cambios, ya que button y buttonText ya están definidos)
 const styles = StyleSheet.create({
   background: { flex: 1, resizeMode: 'cover' },
   header: {
@@ -243,8 +286,19 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 10,
   },
-  title: { fontFamily: 'timesbd', fontSize: 24, marginBottom: 20, textAlign: 'center', color: '#333' },
-  label: { fontFamily: 'timesbd', fontSize: 16, marginBottom: 5 },
+  title: {
+    fontFamily: 'timesbd',
+    fontSize: 24,
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#333',
+  },
+  label: {
+    fontFamily: 'times',
+    fontSize: 16,
+    marginBottom: 5,
+    color: '#333',
+  },
   input: {
     fontFamily: 'times',
     borderWidth: 1,
@@ -253,6 +307,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
     backgroundColor: '#fff',
+    color: '#333',
   },
   inputError: {
     borderColor: '#D32F2F',
@@ -264,6 +319,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
     backgroundColor: '#fff',
+    color: '#333',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -291,10 +347,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   errorText: {
-    fontFamily: 'timesbd',
+    fontFamily: 'times',
     fontSize: 14,
     color: '#D32F2F',
     marginBottom: 10,
+  },
+  loadingText: {
+    fontFamily: 'timesbd',
+    fontSize: 18,
+    color: '#333',
+    textAlign: 'center',
   },
 });
 

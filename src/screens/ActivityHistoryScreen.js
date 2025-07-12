@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
   activityTitle: {
     fontFamily: 'timesbd',
     fontSize: 18,
-    color: '#2E7D32',
+    color: '#333',
     flex: 1,
   },
   statusIndicator: {
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   activityDetail: {
     fontFamily: 'times',
     fontSize: 14,
-    color: '#666',
+    color: '#333',
     marginBottom: 5,
   },
   timeContainer: {
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   noActivitiesText: {
     fontFamily: 'timesbd',
     fontSize: 18,
-    color: '#D32F2F',
+    color: '#333',
     textAlign: 'center',
   },
   loadingText: {
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontFamily: 'timesbd',
     fontSize: 18,
-    color: '#D32F2F',
+    color: '#333',
     textAlign: 'center',
     marginBottom: 20,
   },

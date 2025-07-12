@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   section: {
-    flex: 1, // Asegura que la sección ocupe todo el espacio disponible
+    flex: 1,
   },
   sectionTitle: {
     fontFamily: 'timesbd',

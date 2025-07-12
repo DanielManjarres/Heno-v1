@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image, Alert } from 'react-native';
 import { loginUser } from '../services/dbService';
-import { useUser } from './UserContext'; // Cambiar ../UserContext por ./UserContext
+import { useUser } from './UserContext';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -37,8 +37,8 @@ const LoginScreen = ({ navigation }) => {
   return (
     <ImageBackground source={require('../../assets/images/background.png')} style={styles.background}>
       <View style={styles.header}>
-      <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
-       <Text style={styles.headerText}>Heno 1.0</Text>
+        <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
+        <Text style={styles.headerText}>Heno 1.0</Text>
       </View>
       <View style={styles.container}>
         <Text style={styles.title}>Iniciar Sesión</Text>
@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
     backgroundColor: '#fff',
+    color: '#333',
   },
   button: {
     backgroundColor: '#2E7D32',

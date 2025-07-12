@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginBottom: 20,
     textAlign: 'center',
-    color: '#2E7D32',
+    color: '#333',
   },
   label: {
     fontFamily: 'timesbd',
@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 5,
     backgroundColor: '#fff',
+    color: '#333',
   },
   pickerContainer: {
     borderWidth: 1,
@@ -188,6 +189,7 @@ const styles = StyleSheet.create({
   picker: {
     fontFamily: 'times',
     height: 50,
+    color: '#333',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -218,13 +220,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: 'timesbd',
-    color: '#fff',
+    color: '#333',
     fontSize: 16,
   },
   errorText: {
     fontFamily: 'timesbd',
     fontSize: 16,
-    color: 'red',
+    color: '#333',
     textAlign: 'center',
     marginBottom: 15,
   },
