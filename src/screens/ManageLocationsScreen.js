@@ -238,10 +238,14 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   button: {
+    backgroundColor: '#2E7D32',
     padding: 15,
     borderRadius: 5,
     marginBottom: 10,
     alignItems: 'center',
+  },
+  buttonDisabled: {
+    backgroundColor: '#cccccc',
   },
   buttonText: {
     fontFamily: 'timesbd',
@@ -323,6 +327,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#fff',
     width: '100%',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5,
   },
   modalButtons: {
     flexDirection: 'row',
