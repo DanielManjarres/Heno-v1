@@ -25,43 +25,49 @@ const ActivitiesMenuScreen = ({ navigation }) => {
         <Text style={styles.headerText}>Heno 1.0</Text>
         <Text style={styles.username}>{username}</Text>
       </View>
-      <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Actividades</Text>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('PreparacionTerrenoScreen', { userId, username, role })}
+        >
+          <Text style={styles.buttonText}>Preparación de terreno</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('CorteScreen', { userId, username, role })}
         >
           <Text style={styles.buttonText}>Corte</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('RastrilloAireadorScreen', { userId, username, role })}
         >
           <Text style={styles.buttonText}>Rastrillo aireador</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('RastrilloHileradorScreen', { userId, username, role })}
         >
           <Text style={styles.buttonText}>Rastrillo hilerador</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('EnfardadaScreen', { userId, username, role })}
         >
           <Text style={styles.buttonText}>Enfardada</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('CargaScreen', { userId, username, role })}
         >
           <Text style={styles.buttonText}>Carga</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('PreparacionTerrenoScreen', { userId, username, role })}
-        >
-          <Text style={styles.buttonText}>Preparación de terreno</Text>
         </TouchableOpacity>
       </ScrollView>
     </ImageBackground>
