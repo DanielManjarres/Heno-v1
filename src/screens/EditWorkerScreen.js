@@ -40,19 +40,21 @@ const EditWorkerScreen = ({ route, navigation }) => {
       Apellido: apellido.trim(),
       Fecha_nacimiento: fechaNacimiento === worker.Fecha_nacimiento ? worker.Fecha_nacimiento : (fechaNacimiento ? fechaNacimiento : null), // Reemplaza Edad
       Identificacion: identificacion === worker.Identificacion ? worker.Identificacion : (identificacion ? identificacion.trim() : null),
-      Ubicacion: parseInt(idUbicacion), // Asegura que sea ID_ubicacion
+      ID_ubicacion: parseInt(idUbicacion)
     };
 
     try {
-      const success = await updateWorker(worker.ID_usuario, updatedWorker);
-      if (success) {
-        Alert.alert('Éxito', 'Trabajador actualizado correctamente');
-      } else {
-        Alert.alert('Error', 'No se pudo actualizar el trabajador');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'Error al actualizar el trabajador: ' + error.message);
+    const success = await updateWorker(worker.ID_usuario, updatedWorker);
+    if (success) {
+      Alert.alert('Éxito', 'Trabajador actualizado correctamente', [
+        { text: 'OK', onPress: () => navigation.navigate('HomeScreen', { userId, role }) }
+      ]);
+    } else {
+      Alert.alert('Error', 'No se pudo actualizar el trabajador');
     }
+  } catch (error) {
+    Alert.alert('Error', 'Error al actualizar el trabajador: ' + error.message);
+  }
   };
 
   const handleDelete = async () => {
@@ -69,7 +71,7 @@ const EditWorkerScreen = ({ route, navigation }) => {
               const success = await deleteWorker(worker.ID_usuario);
               if (success) {
                 Alert.alert('Éxito', 'Trabajador eliminado correctamente', [
-                  { text: 'OK', onPress: () => navigation.navigate('WorkerManagementScreen', { userId, role }) },
+                  { text: 'OK', onPress: () => navigation.navigate('HomeScreen', { userId, role }) },
                 ]);
               } else {
                 Alert.alert('Error', 'No se pudo eliminar el trabajador');
@@ -90,6 +92,7 @@ const EditWorkerScreen = ({ route, navigation }) => {
       <View style={styles.header}>
         <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
         <Text style={styles.headerText}>Heno 1.0</Text>
+        <Text style={styles.username}>{user?.username}</Text>
       </View>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.container}>
@@ -145,6 +148,11 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
   },
+  username: {
+  fontFamily: 'timesbd',
+  color: '#fff',
+  fontSize: 16,
+},
   scrollContainer: {
     flex: 1,
   },
@@ -220,7 +228,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: 'timesbd',
-    color: '#333',
+    color: '#fff',
     fontSize: 16,
   },
   errorText: {
