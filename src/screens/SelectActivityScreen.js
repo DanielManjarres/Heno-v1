@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 20,
     textAlign: 'center',
-    color: '#333',
+    color: '#2E7D32',
   },
   activityList: {
     paddingBottom: 20,

@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 10,
     textAlign: 'center',
-    color: '#333',
+    color: '#2E7D32',
   },
   subtitle: {
     fontFamily: 'timesbd',
