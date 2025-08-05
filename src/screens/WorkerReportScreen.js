@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ImageBackground, Image, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ImageBackground, Image, ScrollView, Alert } from 'react-native';
 import { getWorkerHenoRecords, getActivityHistory } from '../services/dbService';
 import { useUser } from './UserContext'; // Ajusta la ruta según la ubicación de UserContext.js
 
 const WorkerReportScreen = ({ route, navigation }) => {
   const { user } = useUser();
-  const { role } = user || {};
+  const { username, role } = user || {};
   const { worker } = route.params;
   const [henoRecords, setHenoRecords] = useState([]);
   const [activities, setActivities] = useState([]);
@@ -13,7 +13,7 @@ const WorkerReportScreen = ({ route, navigation }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!user) return; // No hacemos fetch si no hay usuario logueado
+    if (!user) return;
 
     if (role !== 'Administrador') {
       Alert.alert('Acceso Denegado', 'Solo los administradores pueden ver reportes de trabajadores.');
@@ -24,13 +24,9 @@ const WorkerReportScreen = ({ route, navigation }) => {
     const fetchData = async () => {
       try {
         const henoData = await getWorkerHenoRecords(worker.ID_usuario);
-        console.log('Datos de heno recibidos para trabajador ID', worker.ID_usuario, ':', henoData);
         setHenoRecords(henoData);
 
-        console.log('Obteniendo actividades finalizadas para el usuario:', worker.ID_usuario, 'con rol: Trabajador');
         const history = await getActivityHistory(worker.ID_usuario, 'Trabajador');
-        console.log('Actividades finalizadas:', history);
-
         const sortedActivities = history.sort((a, b) => {
           const dateA = new Date(`${a.Fecha}T${a.Hora_inicio}`);
           const dateB = new Date(`${b.Fecha}T${b.Hora_inicio}`);
@@ -38,40 +34,34 @@ const WorkerReportScreen = ({ route, navigation }) => {
         });
 
         const activitiesWithDuration = sortedActivities.map(activity => {
-          if (!activity.Hora_fin) {
-            return { ...activity, duration: 'No disponible', durationMins: 0 };
-          }
+          if (!activity.Hora_fin) return { ...activity, duration: 'No disponible', durationMins: 0 };
           const startDateTime = new Date(`1970-01-01T${activity.Hora_inicio}`);
           const endDateTime = new Date(`1970-01-01T${activity.Hora_fin}`);
-          if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
-            return { ...activity, duration: 'No disponible', durationMins: 0 };
-          }
+          if (isNaN(startDateTime) || isNaN(endDateTime)) return { ...activity, duration: 'No disponible', durationMins: 0 };
           const diffMs = endDateTime - startDateTime;
-          if (diffMs < 0) {
-            return { ...activity, duration: 'No disponible', durationMins: 0 };
-          }
+          if (diffMs < 0) return { ...activity, duration: 'No disponible', durationMins: 0 };
           const diffMins = Math.floor(diffMs / 1000 / 60);
           const hours = Math.floor(diffMins / 60);
           const minutes = diffMins % 60;
           return { ...activity, duration: `${hours}h ${minutes}m`, durationMins: diffMins };
         });
 
-        const totalMins = activitiesWithDuration.reduce((sum, activity) => sum + (activity.durationMins || 0), 0);
+        const totalMins = activitiesWithDuration.reduce((sum, act) => sum + (act.durationMins || 0), 0);
         const totalHrs = Math.floor(totalMins / 60);
         const remainingMins = totalMins % 60;
         setTotalHours(`${totalHrs}h ${remainingMins}m`);
-
         setActivities(activitiesWithDuration);
         setError(null);
       } catch (err) {
         setError('Error al cargar los datos: ' + err.message);
       }
     };
+
     fetchData();
   }, [worker.ID_usuario, role]);
 
   const handleEdit = () => {
-    navigation.navigate('EditWorkerScreen', { worker }); // No pasamos datos del usuario
+    navigation.navigate('EditWorkerScreen', { worker });
   };
 
   const totalHeno = henoRecords.reduce((sum, record) => sum + record.Cantidad, 0);
@@ -113,13 +103,14 @@ const WorkerReportScreen = ({ route, navigation }) => {
       <View style={styles.header}>
         <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
         <Text style={styles.headerText}>Heno 1.0</Text>
-        <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-          <Text style={styles.buttonText}>Editar</Text>
-        </TouchableOpacity>
+        <Text style={styles.username}>{username}</Text>
       </View>
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           <Text style={styles.title}>Reporte de {worker.Nombre} {worker.Apellido}</Text>
+          <TouchableOpacity style={styles.editButtonTop} onPress={handleEdit}>
+            <Text style={styles.buttonText}>Editar Información del Trabajador</Text>
+          </TouchableOpacity>
           <Text style={styles.subtitle}>Total Heno Recolectado: {totalHeno.toFixed(2)} kg</Text>
           <Text style={styles.subtitle}>Total Horas Trabajadas: {totalHours}</Text>
           {error ? (
@@ -173,7 +164,6 @@ const WorkerReportScreen = ({ route, navigation }) => {
   );
 };
 
-// Estilos (sin cambios, ya que editButton y buttonText ya están definidos)
 const styles = StyleSheet.create({
   background: { flex: 1, resizeMode: 'cover' },
   scrollView: { flex: 1 },
@@ -193,13 +183,20 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
   },
-  editButton: {
-    backgroundColor: '#388E3C',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    elevation: 3,
+  username: {
+    fontFamily: 'timesbd',
+    color: '#fff',
+    fontSize: 16,
   },
+  editButtonTop: {
+  backgroundColor: '#388E3C',
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 8,
+  alignSelf: 'center',
+  marginVertical: 10,
+  elevation: 3,
+},
   buttonText: {
     fontFamily: 'timesbd',
     color: '#fff',
