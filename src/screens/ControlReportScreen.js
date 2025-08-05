@@ -160,7 +160,7 @@ const ControlReportScreen = ({ navigation }) => {
           source={require('../../assets/images/Logo.png')}
           style={styles.logo}
         />
-        <Text style={styles.headerText}>Eco Comercial SAS</Text>
+        <Text style={styles.headerText}>Heno 1.0</Text>
         <Text style={styles.username}>{username}</Text>
       </View>
       <ScrollView style={styles.scrollView}>
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 20,
     textAlign: 'center',
-    color: '#333',
+    color: '#2E7D32',
   },
   sectionTitle: {
     fontFamily: 'timesbd',
