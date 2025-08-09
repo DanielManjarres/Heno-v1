@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ImageBackground, Image, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
+} from 'react-native';
 import { saveHayRecord } from '../services/dbService';
 import { useUser } from './UserContext';
 
@@ -12,7 +24,6 @@ const RegisterHayScreen = ({ navigation }) => {
   const handleSave = async () => {
     if (isSaving) return;
 
-    // Validar el campo
     const parsedQuantity = parseFloat(quantity);
     if (!quantity || isNaN(parsedQuantity) || parsedQuantity < 0) {
       Alert.alert('Error', 'Por favor, ingresa una cantidad válida en kilogramos (mayor o igual a 0).');
@@ -23,17 +34,9 @@ const RegisterHayScreen = ({ navigation }) => {
     try {
       const success = await saveHayRecord(parsedQuantity, userId);
       if (success) {
-        Alert.alert(
-          'Éxito',
-          'Registro de heno guardado correctamente.',
-          [
-            {
-              text: 'OK',
-              onPress: () => navigation.goBack(),
-            },
-          ],
-          { cancelable: false }
-        );
+        Alert.alert('Éxito', 'Registro de heno guardado correctamente.', [
+          { text: 'OK', onPress: () => navigation.goBack() }
+        ]);
         setQuantity('');
       } else {
         Alert.alert('Error', 'No se pudo guardar el registro de heno.');
@@ -66,41 +69,49 @@ const RegisterHayScreen = ({ navigation }) => {
       style={styles.background}
     >
       <View style={styles.header}>
-        <Image
-          source={require('../../assets/images/Logo.png')}
-          style={styles.logo}
-        />
+        <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
         <Text style={styles.headerText}>Heno 1.0</Text>
         <Text style={styles.username}>{username}</Text>
       </View>
-      <View style={styles.container}>
-        <Text style={styles.title}>Registro de Heno</Text>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Cantidad (kg)</Text>
-          <TextInput
-            style={styles.input}
-            value={quantity}
-            onChangeText={setQuantity}
-            keyboardType="numeric"
-            placeholder="Ingresa la cantidad en kg"
-            placeholderTextColor="#999"
-          />
-        </View>
-        <TouchableOpacity
-          style={[styles.saveButton, isSaving && styles.disabledButton]}
-          onPress={handleSave}
-          disabled={isSaving}
+
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 20}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+          keyboardShouldPersistTaps="handled"
         >
-          <Text style={styles.buttonText}>
-            {isSaving ? 'Guardando...' : 'GUARDAR'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.container}>
+            <Text style={styles.title}>Registro de Heno</Text>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Cantidad (kg)</Text>
+              <TextInput
+                style={styles.input}
+                value={quantity}
+                onChangeText={setQuantity}
+                keyboardType="numeric"
+                placeholder="Ingresa la cantidad en kg"
+                placeholderTextColor="#999"
+              />
+            </View>
+            <TouchableOpacity
+              style={[styles.saveButton, isSaving && styles.disabledButton]}
+              onPress={handleSave}
+              disabled={isSaving}
+            >
+              <Text style={styles.buttonText}>
+                {isSaving ? 'Guardando...' : 'GUARDAR'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 };
 
-// Estilos (agregamos errorText para el mensaje de redirección)
 const styles = StyleSheet.create({
   background: {
     flex: 1,
@@ -130,12 +141,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   container: {
-    flex: 1,
     padding: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     margin: 20,
     borderRadius: 10,
-    justifyContent: 'center',
   },
   title: {
     fontFamily: 'timesbd',

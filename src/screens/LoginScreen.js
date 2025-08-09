@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
+} from 'react-native';
 import { loginUser } from '../services/dbService';
 import { useUser } from './UserContext';
 
@@ -40,25 +52,39 @@ const LoginScreen = ({ navigation }) => {
         <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
         <Text style={styles.headerText}>Heno 1.0</Text>
       </View>
-      <View style={styles.container}>
-        <Text style={styles.title}>Iniciar Sesión</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Usuario"
-          value={username}
-          onChangeText={setUsername}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Contraseña"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
-          <Text style={styles.buttonText}>{isLoading ? 'Iniciando...' : 'Iniciar Sesión'}</Text>
-        </TouchableOpacity>
-      </View>
+
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 20}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.container}>
+            <Text style={styles.title}>Iniciar Sesión</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Usuario"
+              value={username}
+              onChangeText={setUsername}
+              returnKeyType="next"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Contraseña"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              returnKeyType="done"
+            />
+            <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
+              <Text style={styles.buttonText}>{isLoading ? 'Iniciando...' : 'Iniciar Sesión'}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 };
@@ -91,12 +117,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   container: {
-    flex: 1,
     padding: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     margin: 20,
     borderRadius: 10,
-    justifyContent: 'center',
   },
   title: {
     fontFamily: 'timesbd',
