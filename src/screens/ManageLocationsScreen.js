@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image, Alert } from 'react-native';
+import {
+  View,Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
+} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { getLocations, addLocation, deleteLocation, getMachines } from '../services/dbService';
-import { useUser } from './UserContext'; // Ajusta la ruta según la ubicación de UserContext.js
+import { useUser } from './UserContext';
 
 const backgroundImage = require('../../assets/images/background3.jpg');
 const logoImage = require('../../assets/images/Logo.png');
@@ -19,7 +30,7 @@ const ManageLocationsScreen = ({ navigation }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!user) return; // No hacemos fetch si no hay usuario logueado
+    if (!user) return;
 
     if (role !== 'Administrador') {
       Alert.alert('Acceso Denegado', 'Solo los administradores pueden gestionar ubicaciones.');
@@ -86,9 +97,7 @@ const ManageLocationsScreen = ({ navigation }) => {
       return;
     }
     try {
-      console.log('Eliminando ubicación con ID:', selectedLocation);
       const success = await deleteLocation(parseInt(selectedLocation));
-      console.log('Resultado de eliminar ubicación:', success);
       if (success) {
         Alert.alert('Éxito', 'Ubicación eliminada');
         setSelectedLocation('');
@@ -109,7 +118,7 @@ const ManageLocationsScreen = ({ navigation }) => {
       <View style={styles.container}>
         <Text style={styles.errorText}>No se ha iniciado sesión. Por favor, inicia sesión.</Text>
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, { backgroundColor: '#2E7D32' }]}
           onPress={() => navigation.navigate('LoginScreen')}
         >
           <Text style={styles.buttonText}>Ir a Iniciar Sesión</Text>
@@ -125,70 +134,85 @@ const ManageLocationsScreen = ({ navigation }) => {
         <Text style={styles.headerText}>Heno 1.0</Text>
         <Text style={styles.username}>{username}</Text>
       </View>
-      <View style={styles.container}>
-        <Text style={styles.title}>Gestionar Ubicaciones</Text>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Añadir Ubicación</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nombre de la ubicación"
-            value={locationName}
-            onChangeText={setLocationName}
-          />
-          <Picker
-            selectedValue={selectedMachine}
-            onValueChange={(itemValue) => setSelectedMachine(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Seleccionar máquina" value="" />
-            {machines.map((machine) => (
-              <Picker.Item
-                key={machine.ID_maquina}
-                label={machine.Nombre}
-                value={machine.ID_maquina.toString()}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1 }}
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={styles.container}>
+            <Text style={styles.title}>Gestionar Ubicaciones</Text>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Añadir Ubicación</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Nombre de la ubicación"
+                value={locationName}
+                onChangeText={setLocationName}
               />
-            ))}
-          </Picker>
-          <TextInput
-            style={styles.input}
-            placeholder="Área (en metros cuadrados)"
-            value={area}
-            onChangeText={setArea}
-            keyboardType="numeric"
-          />
-          <TouchableOpacity style={styles.button} onPress={handleAddLocation}>
-            <Text style={styles.buttonText}>Añadir</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Eliminar Ubicación</Text>
-          <Picker
-            selectedValue={selectedLocation}
-            onValueChange={(itemValue) => setSelectedLocation(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Seleccionar ubicación" value="" />
-            {locations.map((location) => (
-              <Picker.Item
-                key={location.ID_ubicacion}
-                label={location.Nombre}
-                value={location.ID_ubicacion.toString()}
+              <Picker
+                selectedValue={selectedMachine}
+                onValueChange={(itemValue) => setSelectedMachine(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Seleccionar máquina" value="" />
+                {machines.map((machine) => (
+                  <Picker.Item
+                    key={machine.ID_maquina}
+                    label={machine.Nombre}
+                    value={machine.ID_maquina.toString()}
+                  />
+                ))}
+              </Picker>
+              <TextInput
+                style={styles.input}
+                placeholder="Área (en metros cuadrados)"
+                value={area}
+                onChangeText={setArea}
+                keyboardType="numeric"
               />
-            ))}
-          </Picker>
-          <TouchableOpacity
-            style={[styles.button, !selectedLocation && styles.buttonDisabled]}
-            onPress={handleDeleteLocation}
-            disabled={!selectedLocation}
-          >
-            <Text style={styles.buttonText}>Eliminar</Text>
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: '#2E7D32' }]}
+                onPress={handleAddLocation}
+              >
+                <Text style={styles.buttonText}>Añadir</Text>
+              </TouchableOpacity>
+            </View>
 
-        {error && <Text style={styles.errorText}>{error}</Text>}
-      </View>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Eliminar Ubicación</Text>
+              <Picker
+                selectedValue={selectedLocation}
+                onValueChange={(itemValue) => setSelectedLocation(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Seleccionar ubicación" value="" />
+                {locations.map((location) => (
+                  <Picker.Item
+                    key={location.ID_ubicacion}
+                    label={location.Nombre}
+                    value={location.ID_ubicacion.toString()}
+                  />
+                ))}
+              </Picker>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  { backgroundColor: '#D32F2F' },
+                  !selectedLocation && styles.buttonDisabled
+                ]}
+                onPress={handleDeleteLocation}
+                disabled={!selectedLocation}
+              >
+                <Text style={styles.buttonText}>Eliminar</Text>
+              </TouchableOpacity>
+            </View>
+
+            {error && <Text style={styles.errorText}>{error}</Text>}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 };
@@ -229,7 +253,7 @@ const styles = StyleSheet.create({
     color: '#2E7D32',
   },
   section: {
-    flex: 1,
+    marginBottom: 30,
   },
   sectionTitle: {
     fontFamily: 'timesbd',
@@ -243,6 +267,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'center',
   },
+  buttonDisabled: {
+    backgroundColor: '#B0BEC5',
+  },
   buttonText: {
     fontFamily: 'timesbd',
     color: '#fff',
@@ -251,68 +278,9 @@ const styles = StyleSheet.create({
   errorText: {
     fontFamily: 'timesbd',
     fontSize: 16,
-    color: '#333',
+    color: '#D32F2F',
     textAlign: 'center',
     marginBottom: 20,
-  },
-  userList: {
-    paddingBottom: 20,
-  },
-  userItem: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  userText: {
-    fontFamily: 'timesbd',
-    fontSize: 16,
-    color: '#333',
-  },
-  userActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 10,
-  },
-  actionButton: {
-    padding: 10,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  actionButtonText: {
-    fontFamily: 'timesbd',
-    color: '#fff',
-    fontSize: 14,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    width: '80%',
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontFamily: 'timesbd',
-    fontSize: 20,
-    marginBottom: 10,
-    color: '#333',
-  },
-  modalSubtitle: {
-    fontFamily: 'timesbd',
-    fontSize: 16,
-    marginBottom: 20,
-    color: '#333',
   },
   input: {
     fontFamily: 'times',
@@ -324,11 +292,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: '100%',
   },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 10,
+  picker: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    marginBottom: 10,
+    borderRadius: 5,
+    backgroundColor: '#fff',
   },
 });
 

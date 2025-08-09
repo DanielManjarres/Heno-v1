@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ImageBackground, Image, Alert } from 'react-native';
 import { getWorkers } from '../services/dbService';
-import { useUser } from './UserContext'; // Ajusta la ruta según la ubicación de UserContext.js
+import { useUser } from './UserContext'; // Ajusta la ruta según sea necesario
 
 const WorkerManagementScreen = ({ navigation }) => {
   const { user } = useUser();
-  const { role } = user || {};
+  const { role, username } = user || {};
   const [workers, setWorkers] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!user) return; // No hacemos fetch si no hay usuario logueado
+    if (!user) return;
 
     if (role !== 'Administrador') {
       Alert.alert('Acceso Denegado', 'Solo los administradores pueden gestionar trabajadores.');
@@ -21,19 +21,19 @@ const WorkerManagementScreen = ({ navigation }) => {
     const fetchWorkers = async () => {
       try {
         const data = await getWorkers();
-        console.log('Trabajadores obtenidos en WorkerManagementScreen:', data);
+        console.log('Trabajadores obtenidos:', data);
         setWorkers(data);
         setError(null);
       } catch (error) {
         setError(error.message);
       }
     };
+
     fetchWorkers();
   }, [role]);
 
   const handleWorkerSelect = (worker) => {
-    console.log('Navegando a WorkerReportScreen con worker:', worker);
-    navigation.navigate('WorkerReportScreen', { worker }); // No pasamos datos del usuario
+    navigation.navigate('WorkerReportScreen', { worker });
   };
 
   const totalHeno = workers.reduce((sum, worker) => sum + worker.Heno_recolectado, 0);
@@ -55,18 +55,15 @@ const WorkerManagementScreen = ({ navigation }) => {
   return (
     <ImageBackground source={require('../../assets/images/background3.jpg')} style={styles.background}>
       <View style={styles.header}>
-        <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
-        <Text style={styles.headerText}>Heno 1.0</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate('RegisterWorkerScreen')} // No pasamos datos del usuario
-        >
-          <Text style={styles.buttonText}>Agregar Trabajador</Text>
-        </TouchableOpacity>
+       <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
+       <Text style={styles.headerText}>Heno 1.0</Text>
+       <Text style={styles.username}>{username}</Text>
       </View>
+
       <View style={styles.container}>
         <Text style={styles.title}>Gestión de Trabajadores</Text>
         <Text style={styles.subtitle}>Total Heno Recolectado: {totalHeno} kg</Text>
+
         {error ? (
           <Text style={styles.errorText}>{error}</Text>
         ) : workers.length === 0 ? (
@@ -101,33 +98,25 @@ const WorkerManagementScreen = ({ navigation }) => {
   );
 };
 
-// Estilos (sin cambios, ya que addButton y buttonText ya están definidos)
+// Estilos actualizados solo para añadir `username`
 const styles = StyleSheet.create({
   background: { flex: 1, resizeMode: 'cover' },
   header: {
     backgroundColor: '#2E7D32',
-    padding: 15,
+    padding: 10,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    elevation: 5,
+    alignItems: 'center',
   },
   logo: { width: 50, height: 50, resizeMode: 'contain' },
   headerText: {
     fontFamily: 'timesbd',
-    fontSize: 22,
-    color: '#fff',
+    fontSize: 20,
+    color: '#fff', // Asegurando que "Heno 1.0" sea blanco
     flex: 1,
     textAlign: 'center',
   },
-  addButton: {
-    backgroundColor: '#388E3C',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    elevation: 3,
-  },
-  buttonText: {
+  username: {
     fontFamily: 'timesbd',
     color: '#fff',
     fontSize: 16,

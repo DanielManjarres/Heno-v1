@@ -143,22 +143,6 @@ const RegisterWorkerScreen = ({ navigation }) => {
 
   const handleCancel = () => navigation.navigate('HomeScreen', { userId, role });
 
-  if (!user) {
-    return (
-      <ImageBackground source={require('../../assets/images/background3.jpg')} style={styles.background}>
-        <View style={styles.header}>
-          <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
-          <Text style={styles.headerText}>Heno 1.0</Text>
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.errorText}>No se ha iniciado sesión. Por favor, inicia sesión.</Text>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LoginScreen')}>
-            <Text style={styles.buttonText}>Ir a Iniciar Sesión</Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
-    );
-  }
 
   if (isLoading) {
     return (
@@ -175,26 +159,12 @@ const RegisterWorkerScreen = ({ navigation }) => {
     );
   }
 
-  if (error) {
-    return (
-      <ImageBackground source={require('../../assets/images/background3.jpg')} style={styles.background}>
-        <View style={styles.header}>
-          <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
-          <Text style={styles.headerText}>Heno 1.0</Text>
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.title}>Registrar Trabajador</Text>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      </ImageBackground>
-    );
-  }
-
   return (
     <ImageBackground source={require('../../assets/images/background3.jpg')} style={styles.background}>
       <View style={styles.header}>
         <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
         <Text style={styles.headerText}>Heno 1.0</Text>
+        <Text style={styles.username}>{user?.username}</Text>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
@@ -275,6 +245,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     flex: 1,
     textAlign: 'center',
+  },
+  username: {
+    fontFamily: 'timesbd',
+    fontSize: 16,
+    color: '#fff',
   },
   scrollContainer: {
     flexGrow: 1,
